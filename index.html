@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍓 FreshMart — Kasir Buah Digital</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { navy: '#021A54' }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Base ── */
+    body {
+      background-color: #F5F5F5;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── Header ── */
+    .gradient-header {
+      background: linear-gradient(135deg, #021A54 0%, #0a2d7a 60%, #1a3d8f 100%);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #ffffff;
+      border-radius: 1.25rem;
+      box-shadow: 0 4px 24px rgba(2, 26, 84, 0.08);
+    }
+
+    /* ── Input ── */
+    .input-field {
+      width: 100%;
+      padding: 0.65rem 1rem;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 0.75rem;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fafafa;
+    }
+
+    .input-field:focus {
+      border-color: #FF85BB;
+      box-shadow: 0 0 0 3px rgba(255, 133, 187, 0.18);
+      background: #fff;
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      background: linear-gradient(135deg, #FF85BB, #ff5fa0);
+      color: #fff;
+      font-weight: 700;
+      padding: 0.75rem 2rem;
+      border-radius: 0.875rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      box-shadow: 0 4px 16px rgba(255, 133, 187, 0.4);
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(0.92);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255, 133, 187, 0.5);
+    }
+
+    .btn-primary:active  { transform: translateY(0); }
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #021A54;
+      font-weight: 600;
+      padding: 0.65rem 1.5rem;
+      border-radius: 0.875rem;
+      border: 1.5px solid #021A54;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-secondary:hover {
+      background: #021A54;
+      color: #fff;
+    }
+
+    /* ── Badges ── */
+    .price-badge {
+      background: linear-gradient(135deg, #FFCEE3, #ffd6e8);
+      color: #021A54;
+      border-radius: 0.625rem;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      display: inline-block;
+    }
+
+    .total-badge {
+      background: linear-gradient(135deg, #021A54, #0a2d7a);
+      color: #FF85BB;
+      border-radius: 0.875rem;
+      padding: 0.75rem 1.5rem;
+      font-weight: 800;
+      font-size: 1.2rem;
+      display: inline-block;
+    }
+
+    /* ── Table ── */
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    thead th                { background: #021A54; color: #fff; }
+    thead th:first-child    { border-radius: 0.75rem 0 0 0; }
+    thead th:last-child     { border-radius: 0 0.75rem 0 0; }
+    tbody tr                { transition: background 0.15s; }
+    tbody tr:hover          { background: #fff5f9; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 9999;
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateY(6rem);
+      opacity: 0;
+      max-width: 340px;
+      transition: transform 0.35s cubic-bezier(.34, 1.56, .64, 1), opacity 0.3s;
+    }
+
+    .toast.show    { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #021A54; color: #FF85BB; }
+    .toast.error   { background: #ff4d6d; color: #fff; }
+    .toast.loading { background: #0a2d7a; color: #fff; }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 1.1rem;
+      height: 1.1rem;
+      border: 2.5px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Misc ── */
+    .stat-card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 2px 12px rgba(2, 26, 84, 0.07);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #9ca3af;
+    }
+
+    .label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+
+    .err-msg {
+      font-size: 0.75rem;
+      color: #ef4444;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen">
+
+  <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
+  <header class="gradient-header text-white py-6 px-4 shadow-lg">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <div class="text-4xl">🛒</div>
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">FreshMart</h1>
+          <p class="text-sm font-medium opacity-70 tracking-wide">Kasir Buah Digital — Segar &amp; Terpercaya</p>
+        </div>
+      </div>
+
+      <!-- Fruit tags -->
+      <div class="flex gap-2 text-xs font-semibold opacity-80 flex-wrap justify-center">
+        <span class="bg-white/10 rounded-full px-3 py-1">🍓 Stroberi</span>
+        <span class="bg-white/10 rounded-full px-3 py-1">🍇 Anggur</span>
+        <span class="bg-white/10 rounded-full px-3 py-1">🍎 Apel</span>
+        <span class="bg-white/10 rounded-full px-3 py-1">🥑 Alpukat</span>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════ -->
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+
+    <!-- ── STATS ── -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+
+      <div class="stat-card">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Total Pesanan</p>
+        <p class="text-2xl font-extrabold" style="color:#021A54" id="statTotal">0</p>
+      </div>
+
+      <div class="stat-card">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Total Pendapatan</p>
+        <p class="text-base font-extrabold" style="color:#021A54" id="statRevenue">Rp 0</p>
+      </div>
+
+      <div class="stat-card">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Buah Terlaris</p>
+        <p class="text-base font-extrabold" style="color:#021A54" id="statTop">—</p>
+      </div>
+
+      <div class="stat-card">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Total Kg</p>
+        <p class="text-2xl font-extrabold" style="color:#021A54" id="statKg">0</p>
+      </div>
+
+    </div>
+
+    <!-- ── FORM ── -->
+    <div class="card p-6 sm:p-8">
+
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-1 h-7 rounded-full" style="background:#FF85BB"></div>
+        <h2 class="text-xl font-extrabold" style="color:#021A54">Form Pemesanan</h2>
+      </div>
+
+      <form id="orderForm" novalidate>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+          <!-- Nama -->
+          <div>
+            <label class="label" for="name">👤 Nama Pelanggan</label>
+            <input class="input-field" type="text" id="name" placeholder="Masukkan nama lengkap" />
+            <p class="err-msg hidden" id="err-name">Nama wajib diisi.</p>
+          </div>
+
+          <!-- No. HP -->
+          <div>
+            <label class="label" for="phone">📱 No. HP</label>
+            <input class="input-field" type="tel" id="phone" placeholder="08xxxxxxxxxx" />
+            <p class="err-msg hidden" id="err-phone">No. HP wajib diisi (min. 10 digit angka).</p>
+          </div>
+
+          <!-- Alamat -->
+          <div class="sm:col-span-2">
+            <label class="label" for="address">📍 Alamat</label>
+            <input class="input-field" type="text" id="address" placeholder="Jl. Contoh No. 1, Kota" />
+            <p class="err-msg hidden" id="err-address">Alamat wajib diisi.</p>
+          </div>
+
+          <!-- Jenis Buah -->
+          <div>
+            <label class="label" for="fruit">🍑 Jenis Buah</label>
+            <select class="input-field" id="fruit">
+              <option value="">— Pilih Buah —</option>
+              <option value="Salak">🌴 Salak</option>
+              <option value="Jeruk">🍊 Jeruk</option>
+              <option value="Alpukat">🥑 Alpukat</option>
+              <option value="Buah Naga">🐉 Buah Naga</option>
+              <option value="Apel">🍎 Apel</option>
+              <option value="Anggur">🍇 Anggur</option>
+              <option value="Stroberi">🍓 Stroberi</option>
+              <option value="Nangka">🍈 Nangka</option>
+            </select>
+            <p class="err-msg hidden" id="err-fruit">Pilih jenis buah terlebih dahulu.</p>
+          </div>
+
+          <!-- Berat -->
+          <div>
+            <label class="label" for="kg">⚖️ Berat (Kg)</label>
+            <input class="input-field" type="number" id="kg" placeholder="0" min="0.1" step="0.1" />
+            <p class="err-msg hidden" id="err-kg">Berat harus lebih dari 0.</p>
+          </div>
+
+        </div>
+
+        <!-- Price Summary -->
+        <div class="mt-6 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4" style="background:#F5F5F5">
+
+          <div class="flex-1">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Harga per Kg</p>
+            <div class="price-badge" id="priceDisplay">Rp —</div>
+          </div>
+
+          <div class="text-2xl text-gray-300 hidden sm:block font-light">×</div>
+
+          <div class="flex-1">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Berat</p>
+            <div class="price-badge" id="kgDisplay">— Kg</div>
+          </div>
+
+          <div class="text-2xl text-gray-300 hidden sm:block font-light">=</div>
+
+          <div class="flex-1">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Total Harga</p>
+            <div class="total-badge" id="totalDisplay">Rp 0</div>
+          </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <button type="submit" class="btn-primary flex-1 flex items-center justify-center gap-2" id="submitBtn">
+            <span id="submitIcon">🛒</span>
+            <span id="submitText">Tambah Pesanan</span>
+          </button>
+          <button type="button" class="btn-secondary" id="resetBtn">🔄 Reset</button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- ── TABLE ── -->
+    <div class="card p-6 sm:p-8">
+
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-1 h-7 rounded-full" style="background:#FF85BB"></div>
+          <h2 class="text-xl font-extrabold" style="color:#021A54">Riwayat Pesanan</h2>
+        </div>
+        <button id="clearBtn" class="text-xs font-semibold text-red-400 hover:text-red-600 transition-colors flex items-center gap-1 border border-red-200 hover:border-red-400 rounded-lg px-3 py-1.5">
+          🗑️ Hapus Semua
+        </button>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl">
+        <table id="orderTable">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">#</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Nama</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">No. HP</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Alamat</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">Buah</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">Kg</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">Harga/Kg</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">Total</th>
+              <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide">Waktu</th>
+            </tr>
+          </thead>
+          <tbody id="orderBody">
+            <tr>
+              <td colspan="9">
+                <div class="empty-state">
+                  <div class="text-5xl mb-3">🛒</div>
+                  <p class="font-semibold">Belum ada pesanan</p>
+                  <p class="text-sm mt-1">Isi form di atas untuk menambah pesanan</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer class="text-center py-6 text-xs text-gray-400 font-medium">
+    © 2026 FreshMart — Kasir Buah Digital 🍓 | Dibuat dengan ❤️
+  </footer>
+
+  <!-- ══════════════════════════════════════
+       TOAST
+  ══════════════════════════════════════ -->
+  <div class="toast" id="toast">
+    <span id="toastMsg">Berhasil!</span>
+  </div>
+
+  <!-- JS -->
+  <script src="kasir.js"></script>
+
+</body>
+</html>
