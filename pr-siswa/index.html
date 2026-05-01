@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📚 PR Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink-100: #fff0f5;
+      --pink-200: #ffd6e7;
+      --pink-300: #ffb3cc;
+      --pink-400: #ff85aa;
+      --pink-500: #ff5c8a;
+      --pink-600: #e0406e;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-400: #aaaaaa;
+      --gray-600: #666666;
+      --gray-800: #333333;
+      --shadow-sm: 0 2px 8px rgba(255, 92, 138, 0.08);
+      --shadow-md: 0 4px 20px rgba(255, 92, 138, 0.15);
+      --shadow-lg: 0 8px 32px rgba(255, 92, 138, 0.2);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 50%, #f8bbd0 100%);
+      min-height: 100vh;
+      color: var(--gray-800);
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #ff85aa, #ff5c8a, #e0406e);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(224, 64, 110, 0.35);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .header-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 6px;
+    }
+
+    .stat-pill {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50px;
+      padding: 8px 16px;
+      text-align: center;
+      min-width: 70px;
+    }
+
+    .stat-pill .num {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      line-height: 1;
+    }
+
+    .stat-pill .lbl {
+      display: block;
+      font-size: 10px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* ===== MAIN ===== */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      border: 1px solid rgba(255, 182, 210, 0.3);
+    }
+
+    .card-head {
+      padding: 20px 24px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--pink-200);
+      background: linear-gradient(135deg, #fff5f8, #fff0f5);
+    }
+
+    .card-head h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--pink-600);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-head h2 i {
+      color: var(--pink-500);
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* ===== FORM ===== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-group label i {
+      color: var(--pink-400);
+      width: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 11px 14px;
+      border: 2px solid var(--pink-200);
+      border-radius: var(--radius-sm);
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: var(--gray-800);
+      background: var(--white);
+      transition: all 0.2s;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff85aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--pink-400);
+      box-shadow: 0 0 0 3px rgba(255, 133, 170, 0.15);
+    }
+
+    .form-group input::placeholder {
+      color: var(--gray-400);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--pink-200);
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff85aa, #ff5c8a);
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 92, 138, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(255, 92, 138, 0.45);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      background: var(--pink-100);
+      color: var(--pink-600);
+      border: 2px solid var(--pink-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--pink-200);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--pink-500);
+      border: 2px solid var(--pink-300);
+    }
+
+    .btn-outline:hover {
+      background: var(--pink-100);
+    }
+
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 12px;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* ===== FILTER BAR ===== */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--pink-400);
+      font-size: 13px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 14px 10px 36px;
+      border: 2px solid var(--pink-200);
+      border-radius: var(--radius-sm);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s;
+      background: var(--white);
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--pink-400);
+      box-shadow: 0 0 0 3px rgba(255, 133, 170, 0.15);
+    }
+
+    .filter-select {
+      padding: 10px 32px 10px 12px;
+      border: 2px solid var(--pink-200);
+      border-radius: var(--radius-sm);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      color: var(--gray-800);
+      background: var(--white);
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff85aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+
+    .filter-select:focus {
+      border-color: var(--pink-400);
+    }
+
+    /* ===== TABLE ===== */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: linear-gradient(135deg, #fff0f5, #ffd6e7);
+    }
+
+    thead th {
+      padding: 13px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--pink-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    thead th i {
+      margin-right: 5px;
+      opacity: 0.8;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--pink-100);
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: #fff8fb;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--gray-800);
+      vertical-align: middle;
+    }
+
+    .td-num {
+      color: var(--gray-400);
+      font-weight: 600;
+      font-size: 12px;
+      width: 40px;
+    }
+
+    .td-hari {
+      font-weight: 600;
+      color: var(--pink-600);
+    }
+
+    .td-mapel {
+      font-weight: 500;
+    }
+
+    .td-tugas {
+      max-width: 260px;
+    }
+
+    /* ===== BADGE STATUS ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-belum {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .badge-selesai {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    /* ===== DEADLINE HIGHLIGHT ===== */
+    .deadline-urgent {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    .deadline-soon {
+      color: #d97706;
+      font-weight: 600;
+    }
+
+    .deadline-ok {
+      color: var(--gray-600);
+    }
+
+    .deadline-done {
+      color: var(--gray-400);
+      text-decoration: line-through;
+    }
+
+    /* ===== TOGGLE STATUS BUTTON ===== */
+    .btn-toggle-status {
+      background: none;
+      border: 2px solid var(--pink-300);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--pink-500);
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-toggle-status:hover {
+      background: var(--pink-100);
+      border-color: var(--pink-400);
+    }
+
+    .btn-toggle-status.done {
+      border-color: #6ee7b7;
+      color: #065f46;
+      background: #f0fdf4;
+    }
+
+    .btn-toggle-status.done:hover {
+      background: #d1fae5;
+    }
+
+    /* ===== EMPTY & LOADING STATE ===== */
+    .state-box {
+      padding: 60px 24px;
+      text-align: center;
+      color: var(--gray-400);
+    }
+
+    .state-box i {
+      font-size: 48px;
+      color: var(--pink-300);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .state-box p {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-600);
+      margin-bottom: 6px;
+    }
+
+    .state-box span {
+      font-size: 13px;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--pink-200);
+      border-top-color: var(--pink-500);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== TOAST ===== */
+    .toast-wrap {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: white;
+      box-shadow: var(--shadow-lg);
+      animation: slideIn 0.3s ease;
+      min-width: 260px;
+      max-width: 340px;
+    }
+
+    .toast-success { background: linear-gradient(135deg, #34d399, #10b981); }
+    .toast-error   { background: linear-gradient(135deg, #f87171, #ef4444); }
+    .toast-info    { background: linear-gradient(135deg, #ff85aa, #ff5c8a); }
+
+    .toast i { font-size: 16px; }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0);   opacity: 1; }
+      to   { transform: translateX(100%); opacity: 0; }
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: var(--pink-400);
+      font-weight: 500;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .header-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .header-stats { width: 100%; justify-content: space-between; }
+      .stat-pill { flex: 1; }
+      .main { padding: 16px 14px 50px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: 1; }
+      .filter-bar { flex-direction: column; }
+      .search-wrap, .filter-select { width: 100%; }
+      .card-body { padding: 16px; }
+      .form-actions { flex-direction: column; }
+      .form-actions .btn { width: 100%; justify-content: center; }
+      thead th:nth-child(4), tbody td:nth-child(4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="header-icon">📚</div>
+        <div>
+          <div class="header-title">PR Tracker</div>
+          <div class="header-subtitle">Kelola pekerjaan rumahmu dengan mudah ✨</div>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-pill">
+          <span class="num" id="totalPR">0</span>
+          <span class="lbl">Total PR</span>
+        </div>
+        <div class="stat-pill">
+          <span class="num" id="belumPR">0</span>
+          <span class="lbl">Belum</span>
+        </div>
+        <div class="stat-pill">
+          <span class="num" id="selesaiPR">0</span>
+          <span class="lbl">Selesai</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- FORM TAMBAH PR -->
+    <div class="card">
+      <div class="card-head">
+        <h2><i class="fas fa-plus-circle"></i> Tambah PR Baru</h2>
+      </div>
+      <div class="card-body">
+        <form id="prForm" onsubmit="submitPR(event)">
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label><i class="fas fa-calendar-day"></i> Hari</label>
+              <select id="hari" required>
+                <option value="">-- Pilih Hari --</option>
+                <option>Senin</option><option>Selasa</option><option>Rabu</option>
+                <option>Kamis</option><option>Jumat</option><option>Sabtu</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label><i class="fas fa-graduation-cap"></i> Mata Pelajaran</label>
+              <select id="mapel" required>
+                <option value="">-- Pilih Mapel --</option>
+                <option>Matematika</option><option>Bahasa Indonesia</option>
+                <option>Bahasa Inggris</option><option>IPA</option><option>IPS</option>
+                <option>PKN</option><option>Agama</option><option>Seni Budaya</option>
+                <option>PJOK</option><option>Prakarya</option><option>Informatika</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label><i class="fas fa-tasks"></i> Deskripsi Tugas</label>
+              <input type="text" id="tugas" placeholder="Contoh: Kerjakan soal hal. 45 no. 1–10" required />
+            </div>
+
+            <div class="form-group">
+              <label><i class="fas fa-clock"></i> Deadline</label>
+              <input type="date" id="deadline" required />
+            </div>
+
+            <div class="form-group">
+              <label><i class="fas fa-flag"></i> Status</label>
+              <select id="status">
+                <option value="Belum">⏳ Belum</option>
+                <option value="Selesai">✅ Selesai</option>
+              </select>
+            </div>
+
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <i class="fas fa-paper-plane"></i> Simpan PR
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- FILTER -->
+    <div class="card">
+      <div class="card-body" style="padding: 16px 24px;">
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Cari tugas..." oninput="filterData()" />
+          </div>
+          <select class="filter-select" id="filterHari" onchange="filterData()">
+            <option value="">Semua Hari</option>
+            <option>Senin</option><option>Selasa</option><option>Rabu</option>
+            <option>Kamis</option><option>Jumat</option><option>Sabtu</option>
+          </select>
+          <select class="filter-select" id="filterMapel" onchange="filterData()">
+            <option value="">Semua Mapel</option>
+            <option>Matematika</option><option>Bahasa Indonesia</option>
+            <option>Bahasa Inggris</option><option>IPA</option><option>IPS</option>
+            <option>PKN</option><option>Agama</option><option>Seni Budaya</option>
+            <option>PJOK</option><option>Prakarya</option><option>Informatika</option>
+            <option>Lainnya</option>
+          </select>
+          <select class="filter-select" id="filterStatus" onchange="filterData()">
+            <option value="">Semua Status</option>
+            <option value="Belum">⏳ Belum</option>
+            <option value="Selesai">✅ Selesai</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="resetFilter()">
+            <i class="fas fa-xmark"></i> Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABEL DATA -->
+    <div class="card">
+      <div class="card-head">
+        <h2><i class="fas fa-list-check"></i> Daftar PR</h2>
+        <button class="btn btn-outline btn-sm" onclick="loadData()">
+          <i class="fas fa-rotate-right"></i> Refresh
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div class="state-box" id="loadingState">
+        <div class="spinner"></div>
+        <p>Memuat data...</p>
+        <span>Menghubungkan ke Google Sheets</span>
+      </div>
+
+      <!-- Empty -->
+      <div class="state-box" id="emptyState" style="display:none;">
+        <i class="fas fa-inbox"></i>
+        <p>Belum ada PR yang tercatat</p>
+        <span>Tambahkan PR pertamamu di atas! 🎉</span>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap" id="tableWrap" style="display:none;">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th><i class="fas fa-calendar-day"></i>Hari</th>
+              <th><i class="fas fa-graduation-cap"></i>Mapel</th>
+              <th><i class="fas fa-tasks"></i>Tugas</th>
+              <th><i class="fas fa-clock"></i>Deadline</th>
+              <th><i class="fas fa-flag"></i>Status</th>
+              <th><i class="fas fa-gear"></i>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="prTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    💖 PR Tracker — Dibuat dengan semangat belajar &nbsp;|&nbsp; Data tersimpan di Google Sheets
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
